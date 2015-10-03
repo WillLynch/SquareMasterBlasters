@@ -43,7 +43,7 @@ class GridTile:
 
 
 class Character(GridTile):
-
+    pass
 
 class Grid:
     def __init__(self):
