@@ -42,6 +42,9 @@ class GridTile:
             , (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE), (self.x*SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE)], GRID_LINE_THICKNESS)
 
 
+class Character(GridTile):
+
+
 class Grid:
     def __init__(self):
         self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
@@ -59,11 +62,29 @@ class Grid:
         self.current_tile.select()
 
 
+class Player:
+    def __init__(self, board):
+        self.board = board
+        self.characters = []
+        self.actions = 3
+
+    def use_action(self):
+        self.actions = self.actions - 1
+
+    def has_actions(self):
+        if self.actions > 0:
+            return True
+        else:
+            return False
+
+
 class Game:
 
     def __init__(self):
         self.windowSurface = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH), 0, 32)
         self.grid = Grid()
+        self.player1 = Player(self.grid)
+        self.player2 = Player(self.grid)
 
     def run(self):
         pygame.init()
@@ -75,18 +96,24 @@ class Game:
         pygame.display.update()
 
         # game loop
+        current_player = self.player1
         while True:
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == MOUSEBUTTONUP:
-                    if event.pos[0] < SQUARE_SIZE*HOR_SQUARES:
-                        xpos = event.pos[0]//SQUARE_SIZE
-                        ypos = event.pos[1]//SQUARE_SIZE
-                        self.grid.select_tile((xpos, ypos))
-            self.grid.draw(self.windowSurface)
+            while current_player.has_actions():
+                pygame.display.update()
+                for event in pygame.event.get():
+                    if event.type == QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == MOUSEBUTTONUP:
+                        if event.pos[0] < SQUARE_SIZE*HOR_SQUARES:
+                            xpos = event.pos[0]//SQUARE_SIZE
+                            ypos = event.pos[1]//SQUARE_SIZE
+                            self.grid.select_tile((xpos, ypos))
+                self.grid.draw(self.windowSurface)
+            if current_player is self.player1:
+                current_player = self.player2
+            else:
+                current_player = self.player1
 
 
 if __name__ == '__main__':
