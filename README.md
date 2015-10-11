@@ -14,3 +14,9 @@ Once you have cloned this project and have PyGame installed, try running game.py
 
 -Will
 
+Instructions:
+-------------
+
+To move a character, select it on the grid with the mouse, press m on the keyboard, and select the square where 
+you would like to move the character. 
+
