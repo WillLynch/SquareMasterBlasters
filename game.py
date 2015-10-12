@@ -10,13 +10,15 @@ HOR_SQUARES = 16
 WINDOW_WIDTH = SQUARE_SIZE*VERT_SQUARES
 WINDOW_HEIGHT = SQUARE_SIZE*HOR_SQUARES + CONTROL_PANEL_WIDTH
 
+#Colour declarations! Channels = GREED BLUE RED - 
 BLACK = (0,0,0)
 WHITE = (255, 255, 255)
 GREY = (127,127,127)
 GREEN_TRANSPARENT = (0, 255, 0, 128)
-OTHERCOLOR_TRANSPARENT = (0, 128, 0, 255)
-OTHERCOLOR1_TRANSPARENT = (0, 93, 0, 23)
-OTHERCOLOR2_TRANSPARENT = (0, 0, 0, 0)
+RED_TRANSPARENT = (0, 51, 51, 255)
+BLUE_TRANSPARENT = (0, 128, 255, 0)
+YELLOW_TRANSPARENT = (0, 255, 255, 0)
+
 GRID_LINE_THICKNESS = 2
 GRID_IMAGE_DIMENSIONS = SQUARE_SIZE - GRID_LINE_THICKNESS*2
 
@@ -47,7 +49,7 @@ class GridTile:
             if player_turn is 1:
                 pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
             else :
-                pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+                pygame.draw.rect(windowSurface, BLUE_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         else:
             pygame.draw.rect(windowSurface, WHITE, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
 
@@ -71,16 +73,16 @@ class Character(GridTile):
         self.draw_border(windowSurface)
         if self.selected:
             # changes color of character tile selection depending on ownership
-            if player_turn is 1:
-                pygame.draw.rect(windowSurface, OTHERCOLOR2_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            if player_turn is self.owner:
+                pygame.draw.rect(windowSurface, YELLOW_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
             else :
-                pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+                pygame.draw.rect(windowSurface, RED_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         else:
             # changes color of idle character tiles based on ownership of characters
-            if self.owner is 1:
+            if 1 is self.owner:
                 pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
-            elif self.owner is 2: 
-                pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            elif 1 is not self.owner: 
+                pygame.draw.rect(windowSurface, BLUE_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
             else:
                 pygame.draw.rect(windowSurface, WHITE, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         windowSurface.blit(self.image,(X+1,Y+1))
