@@ -14,6 +14,7 @@ BLACK = (0,0,0)
 WHITE = (255, 255, 255)
 GREY = (127,127,127)
 GREEN_TRANSPARENT = (0, 255, 0, 128)
+OTHERCOLOR_TRANSPARENT = (0, 128, 0, 255)
 GRID_LINE_THICKNESS = 2
 GRID_IMAGE_DIMENSIONS = SQUARE_SIZE - GRID_LINE_THICKNESS*2
 
@@ -35,12 +36,15 @@ class GridTile:
         self.x = x
         self.y = y
 
-    def draw(self, windowSurface):
+    def draw(self, windowSurface , player_turn):
         X = self.x*SQUARE_SIZE+GRID_LINE_THICKNESS
         Y = self.y*SQUARE_SIZE+GRID_LINE_THICKNESS
         self.draw_border(windowSurface)
         if self.selected:
-            pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            if player_turn is 1:
+                pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            else :
+                pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         else:
             pygame.draw.rect(windowSurface, WHITE, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
 
@@ -57,12 +61,15 @@ class Character(GridTile):
         self.image = pygame.image.load(os.path.join('img', 'beaker.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
 
-    def draw(self, windowSurface):
+    def draw(self, windowSurface, player_turn):
         X = self.x*SQUARE_SIZE+GRID_LINE_THICKNESS
         Y = self.y*SQUARE_SIZE+GRID_LINE_THICKNESS
         self.draw_border(windowSurface)
         if self.selected:
-            pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            if player_turn is 1:
+                pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            else :
+                pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         else:
             pygame.draw.rect(windowSurface, WHITE, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         windowSurface.blit(self.image,(X+1,Y+1))
@@ -76,10 +83,10 @@ class Grid:
         self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
         self.current_tile = None
 
-    def draw(self, windowSurface):
+    def draw(self, windowSurface, player_turn):
         for x in range(HOR_SQUARES):
             for y in range(VERT_SQUARES):
-                self.grid[(x, y)].draw(windowSurface)
+                self.grid[(x, y)].draw(windowSurface, player_turn)
 
     def select_tile(self, coordinates):
         if self.current_tile:
@@ -129,6 +136,7 @@ class Game:
         self.grid = Grid()
         self.player1 = Player(self.grid)
         self.player2 = Player(self.grid)
+        self.player_turn = 0
 
     @staticmethod
     def text_objects(text, font):
@@ -142,7 +150,7 @@ class Game:
         self.windowSurface.blit(TextSurf, TextRect)
 
     def display_instructions(self):
-        text = "Move - m"
+        text = "Move character - m"
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(500))
@@ -165,6 +173,7 @@ class Game:
         current_player = self.player1
         current_tile = None
         move = False
+        self.player_turn = 1
 
         while True:
             while current_player.has_actions():
@@ -190,16 +199,18 @@ class Game:
                             if event.key == K_m:
                                 move = True
 
-                self.grid.draw(self.windowSurface)
+                self.grid.draw(self.windowSurface, self.player_turn)
             # change turns
             if current_player is self.player1:
                 current_player = self.player2
+                self.player_turn = 2
                 self.player1.restore_actions()
                 self.windowSurface.fill(WHITE)
                 self.display_turn_status("Player 2")
                 self.display_instructions()
             else:
                 current_player = self.player1
+                self.player_turn = 1
                 self.player2.restore_actions()
                 self.windowSurface.fill(WHITE)
                 self.display_turn_status("Player 1")
