@@ -15,6 +15,8 @@ WHITE = (255, 255, 255)
 GREY = (127,127,127)
 GREEN_TRANSPARENT = (0, 255, 0, 128)
 OTHERCOLOR_TRANSPARENT = (0, 128, 0, 255)
+OTHERCOLOR1_TRANSPARENT = (0, 93, 0, 23)
+OTHERCOLOR2_TRANSPARENT = (0, 0, 0, 0)
 GRID_LINE_THICKNESS = 2
 GRID_IMAGE_DIMENSIONS = SQUARE_SIZE - GRID_LINE_THICKNESS*2
 
@@ -41,6 +43,7 @@ class GridTile:
         Y = self.y*SQUARE_SIZE+GRID_LINE_THICKNESS
         self.draw_border(windowSurface)
         if self.selected:
+            # changes color of tile selection based upon which players turn is current
             if player_turn is 1:
                 pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
             else :
@@ -54,10 +57,11 @@ class GridTile:
 
 
 class Character(GridTile):
-    def __init__(self,x,y):
+    def __init__(self,x,y,owner):
         self.x = x
         self.y = y
         self.selected = False
+        self.owner = owner
         self.image = pygame.image.load(os.path.join('img', 'beaker.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
 
@@ -66,12 +70,19 @@ class Character(GridTile):
         Y = self.y*SQUARE_SIZE+GRID_LINE_THICKNESS
         self.draw_border(windowSurface)
         if self.selected:
+            # changes color of character tile selection depending on ownership
             if player_turn is 1:
-                pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+                pygame.draw.rect(windowSurface, OTHERCOLOR2_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
             else :
                 pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         else:
-            pygame.draw.rect(windowSurface, WHITE, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            # changes color of idle character tiles based on ownership of characters
+            if self.owner is 1:
+                pygame.draw.rect(windowSurface, GREEN_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            elif self.owner is 2: 
+                pygame.draw.rect(windowSurface, OTHERCOLOR_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
+            else:
+                pygame.draw.rect(windowSurface, WHITE, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
         windowSurface.blit(self.image,(X+1,Y+1))
 
     def draw_border(self, windowSurface):
@@ -167,8 +178,9 @@ class Game:
         pygame.display.update()
 
         # for testing our pilot project, I have placed two random characters for each player
-        self.player1.add_character(Character(1,1))
-        self.player2.add_character(Character(5,5))
+        # I've modified these to now declare which player each belongs to. 
+        self.player1.add_character(Character(1,1,1)) 
+        self.player2.add_character(Character(5,5,2))
         # game loop
         current_player = self.player1
         current_tile = None
