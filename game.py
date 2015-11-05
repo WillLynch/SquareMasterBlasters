@@ -9,6 +9,8 @@ VERT_SQUARES = 16
 HOR_SQUARES = 16
 WINDOW_WIDTH = SQUARE_SIZE*VERT_SQUARES
 WINDOW_HEIGHT = SQUARE_SIZE*HOR_SQUARES + CONTROL_PANEL_WIDTH
+PLAYER_ONE = 1
+PLAYER_TWO = 2
 
 #Colour declarations! Channels = GREED BLUE RED - 
 BLACK = (0,0,0)
@@ -23,7 +25,7 @@ GRID_LINE_THICKNESS = 2
 GRID_IMAGE_DIMENSIONS = SQUARE_SIZE - GRID_LINE_THICKNESS*2
 
 
-class GridTile:
+class GridTile(object):
 
     def __init__(self,x,y):
         self.x = x
@@ -64,8 +66,15 @@ class Character(GridTile):
         self.y = y
         self.selected = False
         self.owner = owner
+        # replace with image file you want for you character (put the file in the /img directory)
         self.image = pygame.image.load(os.path.join('img', 'beaker.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # here you specify how far your character can move in a single action
+        self.move_ability_distance = 3
+        # here you specify how many hp your character takes down in a single action
+        self.attack_ability = 2
+        # here you specify your characters health points
+        self.health_points = 5
 
     def draw(self, windowSurface, player_turn):
         X = self.x*SQUARE_SIZE+GRID_LINE_THICKNESS
@@ -90,6 +99,19 @@ class Character(GridTile):
     def draw_border(self, windowSurface):
         pygame.draw.lines(windowSurface, GREY, True, [(self.x*SQUARE_SIZE,self.y*SQUARE_SIZE), (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE)
             , (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE), (self.x*SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE)], GRID_LINE_THICKNESS)
+
+class Wilfred(Character):
+    def __init__(self, x,y,owner):
+        super(Wilfred, self).__init__(x,y,owner)
+        # replace with image file you want for you character (put the file in the /img directory)
+        self.image = pygame.image.load(os.path.join('img', 'wilfred.jpg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # here you specify how far your character can move in a single action
+        self.move_ability_distance = 4
+        # here you specify how many hp your character takes down in a single action
+        self.attack_ability = 2
+        # here you specify your characters health points
+        self.health_points = 5
 
 class Grid:
     def __init__(self):
@@ -121,13 +143,15 @@ class Player:
 
     def move_character(self, current_tile, x, y):
         if current_tile in self.characters:
-            temp_tile = self.board.grid[(x,y)]
-            temp_coordinates = (current_tile.x, current_tile.y)
-            self.board.grid[(x,y)] = current_tile
-            self.board.grid[(x,y)].set_coordinates(x, y)
-            self.board.grid[(temp_coordinates[0], temp_coordinates[1])] = temp_tile
-            self.board.grid[(temp_coordinates[0], temp_coordinates[1])].set_coordinates(temp_coordinates[0], temp_coordinates[1])
-            self.use_action()
+            if x in range(current_tile.x-current_tile.move_ability_distance, current_tile.x+current_tile.move_ability_distance+1):
+                if y in range(current_tile.y-current_tile.move_ability_distance, current_tile.y+current_tile.move_ability_distance+1):
+                    temp_tile = self.board.grid[(x,y)]
+                    temp_coordinates = (current_tile.x, current_tile.y)
+                    self.board.grid[(x,y)] = current_tile
+                    self.board.grid[(x,y)].set_coordinates(x, y)
+                    self.board.grid[(temp_coordinates[0], temp_coordinates[1])] = temp_tile
+                    self.board.grid[(temp_coordinates[0], temp_coordinates[1])].set_coordinates(temp_coordinates[0], temp_coordinates[1])
+                    self.use_action()
 
     def use_action(self):
         self.actions = self.actions - 1
@@ -181,8 +205,8 @@ class Game:
 
         # for testing our pilot project, I have placed two random characters for each player
         # I've modified these to now declare which player each belongs to. 
-        self.player1.add_character(Character(1,1,1)) 
-        self.player2.add_character(Character(5,5,2))
+        self.player1.add_character(Wilfred(1,1,PLAYER_ONE))
+        self.player2.add_character(Character(5,5,PLAYER_TWO))
         # game loop
         current_player = self.player1
         current_tile = None
