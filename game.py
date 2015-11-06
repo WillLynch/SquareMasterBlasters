@@ -112,6 +112,19 @@ class Wilfred(Character):
         self.attack_ability = 2
         # here you specify your characters health points
         self.health_points = 5
+        
+class James(Character):
+    def __init__(self, x,y,owner):
+        super(James, self).__init__(x,y,owner)
+        # replace with image file you want for you character (put the file in the /img directory)
+        self.image = pygame.image.load(os.path.join('img', 'james.jpg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # here you specify how far your character can move in a single action
+        self.move_ability_distance = 2
+        # here you specify how many hp your character takes down in a single action
+        self.attack_ability = 5
+        # here you specify your characters health points
+        self.health_points = 4
 
 class Grid:
     def __init__(self):
