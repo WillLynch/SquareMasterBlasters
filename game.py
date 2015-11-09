@@ -126,6 +126,19 @@ class James(Character):
         # here you specify your characters health points
         self.health_points = 4
 
+class Doge(Character):
+    def __init__(self, x,y,owner):
+        super(Doge, self).__init__(x,y,owner)
+        # Load doge into game.
+        self.image = pygame.image.load(os.path.join('img','doge.jpeg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Distance to move
+        self.move_ability_distance = 1
+        # ATTACK POWER
+        self.attack_ability = 10
+        # HEALTH POINTS
+        self.health_points = 2
+
 class Grid:
     def __init__(self):
         self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
@@ -220,6 +233,7 @@ class Game:
         # I've modified these to now declare which player each belongs to. 
         self.player1.add_character(Wilfred(1,1,PLAYER_ONE))
         self.player2.add_character(Character(5,5,PLAYER_TWO))
+        self.player1.add_character(Doge(1,2,PLAYER_ONE))
         # game loop
         current_player = self.player1
         current_tile = None
