@@ -159,11 +159,11 @@ class Moad(Character):
         self.image = pygame.image.load(os.path.join('img', 'mo.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # here you specify how far your character can move in a single action
-        self.move_ability_distance = 1
+        self.move_ability_distance = 4
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability = 3
+        self.attack_ability = 2
         # here you specify your characters health points
-        self.health_points = 10
+        self.health_points = 5
 
 class Grid:
     def __init__(self):
