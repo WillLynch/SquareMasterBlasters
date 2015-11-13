@@ -126,7 +126,7 @@ class James(Character):
         # here you specify your characters health points
         self.health_points = 4
         
-        class Bridget(Character):
+class Bridget(Character):
     def __init__(self, x,y,owner):
         super(Bridget, self).__init__(x,y,owner)
         # replace with image file you want for you character (put the file in the /img directory)
