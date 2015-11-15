@@ -24,6 +24,8 @@ YELLOW_TRANSPARENT = (0, 255, 255, 0)
 GRID_LINE_THICKNESS = 2
 GRID_IMAGE_DIMENSIONS = SQUARE_SIZE - GRID_LINE_THICKNESS*2
 
+# Gameplay constants
+TURN_ACTIONS = 2
 
 class GridTile(object):
 
@@ -72,7 +74,8 @@ class Character(GridTile):
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 3
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability = 2
+        self.attack_ability_distance = 2
+        self.attack_power = 2
         # here you specify your characters health points
         self.health_points = 5
 
@@ -109,7 +112,8 @@ class Wilfred(Character):
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 4
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability = 2
+        self.attack_ability_distance = 2
+        self.attack_power = 2
         # here you specify your characters health points
         self.health_points = 5
         
@@ -122,7 +126,8 @@ class James(Character):
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 2
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability = 5
+        self.attack_ability_distance = 5
+        self.attack_power = 2
         # here you specify your characters health points
         self.health_points = 4
         
@@ -135,7 +140,8 @@ class Bridget(Character):
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 7
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability = 2
+        self.attack_ability_distance = 2
+        self.attack_power = 2
         # here you specify your characters health points
         self.health_points = 5
 
@@ -148,7 +154,8 @@ class Doge(Character):
         # Distance to move
         self.move_ability_distance = 1
         # ATTACK POWER
-        self.attack_ability = 10
+        self.attack_ability_distance = 10
+        self.attack_power = 2
         # HEALTH POINTS
         self.health_points = 2
         
@@ -161,7 +168,8 @@ class Moad(Character):
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 1
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability = 3
+        self.attack_ability_distance = 3
+        self.attack_power = 2
         # here you specify your characters health points
         self.health_points = 10
 
@@ -187,11 +195,15 @@ class Player:
     def __init__(self, board):
         self.board = board
         self.characters = []
-        self.actions = 1
+        self.actions = TURN_ACTIONS
 
     def add_character(self, character):
         self.characters.append(character)
         self.board.grid[character.x, character.y] = character
+
+    def remove_character(self, character):
+        self.characters.remove(character)
+        self.board.grid[character.x, character.y] = GridTile(character.x, character.y)
 
     def move_character(self, current_tile, x, y):
         if current_tile in self.characters:
@@ -205,11 +217,19 @@ class Player:
                     self.board.grid[(temp_coordinates[0], temp_coordinates[1])].set_coordinates(temp_coordinates[0], temp_coordinates[1])
                     self.use_action()
 
+    def attack_character(self, current_tile, x, y):
+        if current_tile in self.characters:
+            if x in range(current_tile.x-current_tile.attack_ability_distance, current_tile.x+current_tile.attack_ability_distance+1):
+                if y in range(current_tile.y-current_tile.attack_ability_distance, current_tile.y+current_tile.attack_ability_distance+1):
+                    attacked_tile = self.board.grid[(x,y)]
+                    attacked_tile.health_points = attacked_tile.health_points - current_tile.attack_power
+                    self.use_action()
+
     def use_action(self):
         self.actions = self.actions - 1
 
     def restore_actions(self):
-        self.actions = 1
+        self.actions = TURN_ACTIONS
 
     def has_actions(self):
         if self.actions > 0:
@@ -239,7 +259,7 @@ class Game:
         self.windowSurface.blit(TextSurf, TextRect)
 
     def display_instructions(self):
-        text = "Move character - m"
+        text = "Move character - m, Attack - a"
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(500))
@@ -262,8 +282,10 @@ class Game:
         self.player1.add_character(Doge(1,2,PLAYER_ONE))
         # game loop
         current_player = self.player1
+        other_player = self.player2
         current_tile = None
         move = False
+        attack = False
         self.player_turn = 1
 
         while True:
@@ -275,8 +297,26 @@ class Game:
                             if event.pos[0] < SQUARE_SIZE*HOR_SQUARES:
                                 xpos = event.pos[0]//SQUARE_SIZE
                                 ypos = event.pos[1]//SQUARE_SIZE
-                                current_player.move_character(current_tile, xpos,ypos)
+                                move_tile = self.grid.grid[(xpos,ypos)]
+                                if current_tile in current_player.characters and move_tile not in other_player.characters:
+                                    current_player.move_character(current_tile, xpos,ypos)
+                                    move = False
                                 move = False
+
+                    elif attack is True:
+                        if event.type == MOUSEBUTTONUP:
+                            if event.pos[0] < SQUARE_SIZE*HOR_SQUARES:
+                                xpos = event.pos[0]//SQUARE_SIZE
+                                ypos = event.pos[1]//SQUARE_SIZE
+                                attack_tile = self.grid.grid[(xpos, ypos)]
+                                if current_tile in current_player.characters and attack_tile in other_player.characters:
+                                    current_player.attack_character(current_tile, xpos, ypos)
+                                    attack = False
+                                    # remove character if dead
+                                    if attack_tile.health_points <= 0:
+                                        other_player.remove_character(attack_tile)
+
+                                attack = False
                     else:
                         if event.type == QUIT:
                             pygame.quit()
@@ -289,11 +329,14 @@ class Game:
                         elif event.type == KEYDOWN:
                             if event.key == K_m:
                                 move = True
+                            if event.key == K_a:
+                                attack = True
 
                 self.grid.draw(self.windowSurface, self.player_turn)
             # change turns
             if current_player is self.player1:
                 current_player = self.player2
+                other_player = self.player1
                 self.player_turn = 2
                 self.player1.restore_actions()
                 self.windowSurface.fill(WHITE)
@@ -301,6 +344,7 @@ class Game:
                 self.display_instructions()
             else:
                 current_player = self.player1
+                other_player = self.player2
                 self.player_turn = 1
                 self.player2.restore_actions()
                 self.windowSurface.fill(WHITE)
