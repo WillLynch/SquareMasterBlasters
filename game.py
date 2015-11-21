@@ -103,6 +103,43 @@ class Character(GridTile):
         pygame.draw.lines(windowSurface, GREY, True, [(self.x*SQUARE_SIZE,self.y*SQUARE_SIZE), (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE)
             , (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE), (self.x*SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE)], GRID_LINE_THICKNESS)
 
+
+class Grid:
+    def __init__(self):
+        self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
+        self.current_tile = None
+
+    def draw(self, windowSurface, player_turn):
+        for x in range(HOR_SQUARES):
+            for y in range(VERT_SQUARES):
+                self.grid[(x, y)].draw(windowSurface, player_turn)
+
+    def select_tile(self, coordinates):
+        if self.current_tile:
+            self.current_tile.deselect()
+        self.current_tile = self.grid[coordinates]
+        self.current_tile.select()
+        return self.current_tile
+
+#------------------------------------- 
+# This class is a template to create extra characters from 
+# copy the class and replace/set the values accordingly
+# ------------------------------------
+class Characternamehere(Character):
+    def __init__(self, x,y,owner):
+        super(George, self).__init__(x,y,owner)
+        # These two load the image specified 
+        self.image = pygame.image.load(os.path.join('img', 'example.jpeg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Move Distance
+        self.move_ability = 1 # Scales between 1-10 
+        # Attack Distance
+        self.attack_ability_distance = 1 # Scales between 1-10 
+        # Attack value
+        self.attack_power = 1 # Scales between 1-10
+        # Health points
+        self.health_points = 1 # Scales between 1-10
+
 class Wilfred(Character):
     def __init__(self, x,y,owner):
         super(Wilfred, self).__init__(x,y,owner)
@@ -154,10 +191,10 @@ class Doge(Character):
         # Distance to move
         self.move_ability_distance = 1
         # ATTACK POWER
-        self.attack_ability_distance = 10
-        self.attack_power = 2
+        self.attack_ability_distance = 2
+        self.attack_power = 3
         # HEALTH POINTS
-        self.health_points = 2
+        self.health_points = 4
         
 class Moad(Character):
     def __init__(self, x,y,owner):
@@ -173,23 +210,36 @@ class Moad(Character):
         # here you specify your characters health points
         self.health_points = 10
 
-class Grid:
-    def __init__(self):
-        self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
-        self.current_tile = None
+class Barney(Character):
+    def __init__(self, x,y,owner):
+        super(Barney, self).__init__(x,y,owner)
+        # Load barney into the game yo.
+        self.image = pygame.image.load(os.path.join('img', 'barney.jpg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Move distance
+        self.move_ability_distance = 3
+        # Attack power
+        self.attack_ability_distance = 3 
+        self.attack_power = 3 
 
-    def draw(self, windowSurface, player_turn):
-        for x in range(HOR_SQUARES):
-            for y in range(VERT_SQUARES):
-                self.grid[(x, y)].draw(windowSurface, player_turn)
+        # Health Points
+        self.health_points = 5
 
-    def select_tile(self, coordinates):
-        if self.current_tile:
-            self.current_tile.deselect()
-        self.current_tile = self.grid[coordinates]
-        self.current_tile.select()
-        return self.current_tile
+# George is meant to be semi-overpowered.
+class George(Character):
+    def __init__(self, x,y,owner):
+        super(George, self).__init__(x,y,owner)
+        # George has entered the game.
+        self.image = pygame.image.load(os.path.join('img', 'george.jpeg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Move Distance
+        self.move_ability = 1
+        # Attack power and distance
+        self.attack_ability_distance = 1
+        self.attack_power = 10
 
+        # Health points
+        self.health_points = 10
 
 class Player:
     def __init__(self, board):
@@ -231,6 +281,9 @@ class Player:
     def restore_actions(self):
         self.actions = TURN_ACTIONS
 
+    def get_actions(self):
+        return self.actions
+
     def has_actions(self):
         if self.actions > 0:
             return True
@@ -252,6 +305,10 @@ class Game:
         textSurface = font.render(text, True, (BLACK))
         return textSurface, textSurface.get_rect()
 
+    def text_objects_white(text, font):
+        textSurface = font.render(text, True, (WHITE))
+        return textSurface, textSurface.get_rect()
+    
     def display_turn_status(self, text):
         largeText = pygame.font.Font('freesansbold.ttf',60)
         TextSurf, TextRect = self.text_objects(text, largeText)
@@ -265,9 +322,24 @@ class Game:
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(500))
         self.windowSurface.blit(TextSurf, TextRect)
 
+    # displays the Stats of the currently selected character. 
+    def display_moves(self, playermoves):
+        #this chunk acts as an eraser to get rid of the previous text first
+        #text = "Remaining moves: 100"
+        #small_text = pygame.font.Font('freesansbold.ttf',14)
+        #TextSurf, TextRect = self.text_objects_white(text, small_text)
+        #TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(150))
+        #self.windowSurface.blit(TextSurf, TextRect)
+        # This chunk sets the text to the current moves the player has
+        text = "Remaining moves: " + str(playermoves)
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(150))
+        self.windowSurface.blit(TextSurf, TextRect)
+
     def run(self):
         pygame.init()
-        pygame.display.set_caption("SENG 330 PROJECT")
+        pygame.display.set_caption("Square Master Blasters")
 
         basic_font = pygame.font.SysFont(None, 48)
         self.windowSurface.fill(WHITE)
@@ -277,9 +349,14 @@ class Game:
 
         # for testing our pilot project, I have placed two random characters for each player
         # I've modified these to now declare which player each belongs to. 
-        self.player1.add_character(Wilfred(1,1,PLAYER_ONE))
-        self.player2.add_character(Character(5,5,PLAYER_TWO))
-        self.player1.add_character(Doge(1,2,PLAYER_ONE))
+        self.player1.add_character(Wilfred(1,1, PLAYER_ONE))
+        self.player1.add_character(Doge(1,2, PLAYER_ONE))
+        self.player1.add_character(Barney(1,3, PLAYER_ONE))
+        self.player1.add_character(Bridget(1,4, PLAYER_ONE))
+        self.player2.add_character(Moad(5,2, PLAYER_TWO))
+        self.player2.add_character(Character(5,5, PLAYER_TWO))
+        self.player2.add_character(George(5,4, PLAYER_TWO))
+        
         # game loop
         current_player = self.player1
         other_player = self.player2
@@ -331,8 +408,10 @@ class Game:
                                 move = True
                             if event.key == K_a:
                                 attack = True
-
                 self.grid.draw(self.windowSurface, self.player_turn)
+                print(current_player.get_actions())
+                self.display_moves(current_player.get_actions())
+            # Update Text to display how many moves the current player has
             # change turns
             if current_player is self.player1:
                 current_player = self.player2
