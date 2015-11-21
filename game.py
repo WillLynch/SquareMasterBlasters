@@ -242,10 +242,11 @@ class George(Character):
         self.health_points = 10
 
 class Player:
-    def __init__(self, board):
+    def __init__(self, board, player_id):
         self.board = board
         self.characters = []
         self.actions = TURN_ACTIONS
+        self.ID = player_id
 
     def add_character(self, character):
         self.characters.append(character)
@@ -283,6 +284,9 @@ class Player:
 
     def get_actions(self):
         return self.actions
+        
+    def get_player(self):
+        return self.ID
 
     def has_actions(self):
         if self.actions > 0:
@@ -296,8 +300,8 @@ class Game:
     def __init__(self):
         self.windowSurface = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH), 0, 32)
         self.grid = Grid()
-        self.player1 = Player(self.grid)
-        self.player2 = Player(self.grid)
+        self.player1 = Player(self.grid, "Player 1")
+        self.player2 = Player(self.grid, "Player 2")
         self.player_turn = 0
 
     @staticmethod
@@ -305,6 +309,7 @@ class Game:
         textSurface = font.render(text, True, (BLACK))
         return textSurface, textSurface.get_rect()
 
+    @staticmethod
     def text_objects_white(text, font):
         textSurface = font.render(text, True, (WHITE))
         return textSurface, textSurface.get_rect()
@@ -322,14 +327,16 @@ class Game:
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(500))
         self.windowSurface.blit(TextSurf, TextRect)
 
+    def clear_player_moves(self, playermoves):
+        #this chunk acts as an eraser to get rid of the previous text first
+        text = "Remaining moves: " + str(playermoves)
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects_white(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(150))
+        self.windowSurface.blit(TextSurf, TextRect)
+
     # displays the Stats of the currently selected character. 
     def display_moves(self, playermoves):
-        #this chunk acts as an eraser to get rid of the previous text first
-        #text = "Remaining moves: 100"
-        #small_text = pygame.font.Font('freesansbold.ttf',14)
-        #TextSurf, TextRect = self.text_objects_white(text, small_text)
-        #TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(150))
-        #self.windowSurface.blit(TextSurf, TextRect)
         # This chunk sets the text to the current moves the player has
         text = "Remaining moves: " + str(playermoves)
         small_text = pygame.font.Font('freesansbold.ttf',14)
@@ -409,9 +416,10 @@ class Game:
                             if event.key == K_a:
                                 attack = True
                 self.grid.draw(self.windowSurface, self.player_turn)
-                print(current_player.get_actions())
+                # This will display how many moves the current player has.
+                self.clear_player_moves(current_player.get_actions()+1) 
                 self.display_moves(current_player.get_actions())
-            # Update Text to display how many moves the current player has
+
             # change turns
             if current_player is self.player1:
                 current_player = self.player2
@@ -421,6 +429,8 @@ class Game:
                 self.windowSurface.fill(WHITE)
                 self.display_turn_status("Player 2")
                 self.display_instructions()
+                self.clear_player_moves(current_player.get_actions()+1) 
+                self.display_moves(current_player.get_actions())
             else:
                 current_player = self.player1
                 other_player = self.player2
@@ -429,6 +439,8 @@ class Game:
                 self.windowSurface.fill(WHITE)
                 self.display_turn_status("Player 1")
                 self.display_instructions()
+                self.clear_player_moves(current_player.get_actions()+1) 
+                self.display_moves(current_player.get_actions())
 
 if __name__ == '__main__':
     Game().run()
