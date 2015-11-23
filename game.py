@@ -107,6 +107,31 @@ class Game:
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(150))
         self.windowSurface.blit(TextSurf, TextRect)
 
+    def display_info(self, current_tile):
+        text = "Health: " + str(current_tile.health_points)
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(250))
+        self.windowSurface.blit(TextSurf, TextRect)
+
+        text = "Move distance: " + str(current_tile.move_ability_distance)
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(300))
+        self.windowSurface.blit(TextSurf, TextRect)
+
+        text = "Attack Power " + str(current_tile.attack_power)
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(350))
+        self.windowSurface.blit(TextSurf, TextRect)
+
+        text = "Range: " + str(current_tile.attack_ability_distance)
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(400))
+        self.windowSurface.blit(TextSurf, TextRect)
+
     def run(self):
         pygame.init()
         pygame.display.set_caption("Square Master Blasters")
@@ -137,6 +162,8 @@ class Game:
 
         while True:
             while current_player.has_actions():
+                if current_tile in current_player.characters or current_tile in other_player.characters:
+                    self.display_info(current_tile)
                 pygame.display.update()
                 for event in pygame.event.get():
                     if move is True:
@@ -190,7 +217,7 @@ class Game:
                 self.player_turn = 2
                 self.player1.restore_actions()
                 self.windowSurface.fill(WHITE)
-                self.display_turn_status("Player 2")
+                self.display_turn_status(current_player.get_player())
                 self.display_instructions()
                 self.clear_player_moves(current_player.get_actions()+1) 
                 self.display_moves(current_player.get_actions())
@@ -200,7 +227,7 @@ class Game:
                 self.player_turn = 1
                 self.player2.restore_actions()
                 self.windowSurface.fill(WHITE)
-                self.display_turn_status("Player 1")
+                self.display_turn_status(current_player.get_player())
                 self.display_instructions()
                 self.clear_player_moves(current_player.get_actions()+1) 
                 self.display_moves(current_player.get_actions())

@@ -47,12 +47,12 @@ class Character(GridTile):
         self.image = pygame.image.load(os.path.join('img', 'beaker.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # here you specify how far your character can move in a single action
-        self.move_ability_distance = 3
+        self.move_ability_distance = None
         # here you specify how many hp your character takes down in a single action
-        self.attack_ability_distance = 2
-        self.attack_power = 2
+        self.attack_ability_distance = None
+        self.attack_power = None
         # here you specify your characters health points
-        self.health_points = 5
+        self.health_points = None
 
     def draw(self, windowSurface, player_turn):
         X = self.x*SQUARE_SIZE+GRID_LINE_THICKNESS
@@ -61,6 +61,8 @@ class Character(GridTile):
         if self.selected:
             # changes color of character tile selection depending on ownership
             if player_turn is self.owner:
+                # this line colors the outside of the square Yellow if it is the players.
+                #self.draw_display()
                 pygame.draw.rect(windowSurface, YELLOW_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
             else :
                 pygame.draw.rect(windowSurface, RED_TRANSPARENT, (X,Y,SQUARE_SIZE-1,SQUARE_SIZE-1))
@@ -77,7 +79,6 @@ class Character(GridTile):
     def draw_border(self, windowSurface):
         pygame.draw.lines(windowSurface, GREY, True, [(self.x*SQUARE_SIZE,self.y*SQUARE_SIZE), (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE)
             , (self.x*SQUARE_SIZE+SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE), (self.x*SQUARE_SIZE,self.y*SQUARE_SIZE+SQUARE_SIZE)], GRID_LINE_THICKNESS)
-
 
 class Grid:
     def __init__(self):
@@ -208,7 +209,7 @@ class George(Character):
         self.image = pygame.image.load(os.path.join('img', 'george.jpeg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # Move Distance
-        self.move_ability = 1
+        self.move_ability_distance = 1
         # Attack power and distance
         self.attack_ability_distance = 1
         self.attack_power = 10
