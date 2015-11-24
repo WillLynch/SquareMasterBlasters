@@ -23,15 +23,16 @@ class Player:
 
     def move_character(self, current_tile, x, y):
         if current_tile in self.characters:
-            if x in range(current_tile.x-current_tile.move_ability_distance, current_tile.x+current_tile.move_ability_distance+1):
-                if y in range(current_tile.y-current_tile.move_ability_distance, current_tile.y+current_tile.move_ability_distance+1):
-                    temp_tile = self.board.grid[(x,y)]
-                    temp_coordinates = (current_tile.x, current_tile.y)
-                    self.board.grid[(x,y)] = current_tile
-                    self.board.grid[(x,y)].set_coordinates(x, y)
-                    self.board.grid[(temp_coordinates[0], temp_coordinates[1])] = temp_tile
-                    self.board.grid[(temp_coordinates[0], temp_coordinates[1])].set_coordinates(temp_coordinates[0], temp_coordinates[1])
-                    self.use_action()
+        	if x==current_tile.x or y==current_tile.y:
+        	    if x in range(current_tile.x-current_tile.move_ability_distance, current_tile.x+current_tile.move_ability_distance+1):
+        	        if y in range(current_tile.y-current_tile.move_ability_distance, current_tile.y+current_tile.move_ability_distance+1):
+        	            temp_tile = self.board.grid[(x,y)]
+        	            temp_coordinates = (current_tile.x, current_tile.y)
+                        self.board.grid[(x,y)] = current_tile
+                        self.board.grid[(x,y)].set_coordinates(x, y)
+                        self.board.grid[(temp_coordinates[0], temp_coordinates[1])] = temp_tile
+                        self.board.grid[(temp_coordinates[0], temp_coordinates[1])].set_coordinates(temp_coordinates[0], temp_coordinates[1])
+                        self.use_action()
 
     def attack_character(self, current_tile, x, y):
         if current_tile in self.characters:
@@ -125,12 +126,16 @@ class Game:
         text = "Health: " + str(current_tile.health_points)
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
+        TextErase, TextRect_E = self.text_objects_white(text,small_text)
+        TextRect_E.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(250))
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(250))
+        self.windowSurface.blit(TextErase, TextRect_E)
         self.windowSurface.blit(TextSurf, TextRect)
 
         text = "Move distance: " + str(current_tile.move_ability_distance)
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
+        TextErase, TextRect_E = self.text_objects_white(text,small_text)
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(300))
         self.windowSurface.blit(TextSurf, TextRect)
 
@@ -183,6 +188,7 @@ class Game:
         while True:
             while current_player.has_actions():
                 if current_tile in current_player.characters or current_tile in other_player.characters:
+                    self.windowSurface.fill(WHITE, (WINDOW_WIDTH+10,CONTROL_PANEL_WIDTH/2,262,290))
                     self.display_info(current_tile)
                 pygame.display.update()
                 for event in pygame.event.get():
