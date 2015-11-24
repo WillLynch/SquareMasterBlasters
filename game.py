@@ -18,6 +18,8 @@ class Player:
     def remove_character(self, character):
         self.characters.remove(character)
         self.board.grid[character.x, character.y] = GridTile(character.x, character.y)
+    def clear_characters(self):
+        self.characters = []
 
     def move_character(self, current_tile, x, y):
         if current_tile in self.characters:
@@ -84,10 +86,22 @@ class Game:
         self.windowSurface.blit(TextSurf, TextRect)
 
     def display_instructions(self):
-        text = "Move character - m, Attack - a"
+        text = "Move character - m"
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(500))
+        self.windowSurface.blit(TextSurf, TextRect)
+
+        text = "Attack - a"
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(514))
+        self.windowSurface.blit(TextSurf, TextRect)
+
+        text = "New Game - n"
+        small_text = pygame.font.Font('freesansbold.ttf',14)
+        TextSurf, TextRect = self.text_objects(text, small_text)
+        TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(528))
         self.windowSurface.blit(TextSurf, TextRect)
 
     def clear_player_moves(self, playermoves):
@@ -132,7 +146,7 @@ class Game:
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(400))
         self.windowSurface.blit(TextSurf, TextRect)
 
-    def run(self):
+    def new_game_setup(self):
         pygame.init()
         pygame.display.set_caption("Square Master Blasters")
 
@@ -140,18 +154,24 @@ class Game:
         self.windowSurface.fill(WHITE)
         self.display_instructions()
         self.display_turn_status("Player 1")
+        self.player_turn = 0
         pygame.display.update()
+        self.player1.clear_characters()
+        self.player2.clear_characters()
+        self.grid.clear_grid()
 
         # for testing our pilot project, I have placed two random characters for each player
-        # I've modified these to now declare which player each belongs to. 
+        # I've modified these to now declare which player each belongs to.
         self.player1.add_character(Wilfred(1,1, PLAYER_ONE))
         self.player1.add_character(Doge(1,2, PLAYER_ONE))
         self.player1.add_character(Barney(1,3, PLAYER_ONE))
         self.player1.add_character(Bridget(1,4, PLAYER_ONE))
         self.player2.add_character(Moad(5,2, PLAYER_TWO))
-        self.player2.add_character(Character(5,5, PLAYER_TWO))
         self.player2.add_character(George(5,4, PLAYER_TWO))
-        
+
+
+    def run(self):
+        self.new_game_setup()
         # game loop
         current_player = self.player1
         other_player = self.player2
@@ -205,6 +225,8 @@ class Game:
                                 move = True
                             if event.key == K_a:
                                 attack = True
+                            if event.key == K_n:
+                                self.run()
                 self.grid.draw(self.windowSurface, self.player_turn)
                 # This will display how many moves the current player has.
                 self.clear_player_moves(current_player.get_actions()+1) 
@@ -231,6 +253,14 @@ class Game:
                 self.display_instructions()
                 self.clear_player_moves(current_player.get_actions()+1) 
                 self.display_moves(current_player.get_actions())
+
+            if len(current_player.characters) == 0:
+                self.windowSurface.fill(WHITE)
+                if current_player == self.player1:
+                    self.display_turn_status("Player 2 Won!")
+                else:
+                    self.display_turn_status("Player 1 Won!")
+
 
 if __name__ == '__main__':
     Game().run()

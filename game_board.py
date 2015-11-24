@@ -97,6 +97,8 @@ class Grid:
         self.current_tile.select()
         return self.current_tile
 
+    def clear_grid(self):
+        self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
 #-------------------------------------
 # This class is a template to create extra characters from
 # copy the class and replace/set the values accordingly
