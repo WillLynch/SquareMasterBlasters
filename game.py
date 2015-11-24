@@ -111,12 +111,16 @@ class Game:
         text = "Health: " + str(current_tile.health_points)
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
+        TextErase, TextRect_E = self.text_objects_white(text,small_text)
+        TextRect_E.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(250))
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(250))
+        self.windowSurface.blit(TextErase, TextRect_E)
         self.windowSurface.blit(TextSurf, TextRect)
 
         text = "Move distance: " + str(current_tile.move_ability_distance)
         small_text = pygame.font.Font('freesansbold.ttf',14)
         TextSurf, TextRect = self.text_objects(text, small_text)
+        TextErase, TextRect_E = self.text_objects_white(text,small_text)
         TextRect.center = ((WINDOW_WIDTH+CONTROL_PANEL_WIDTH/2),(300))
         self.windowSurface.blit(TextSurf, TextRect)
 
@@ -163,6 +167,7 @@ class Game:
         while True:
             while current_player.has_actions():
                 if current_tile in current_player.characters or current_tile in other_player.characters:
+                    self.windowSurface.fill(WHITE, (WINDOW_WIDTH+10,CONTROL_PANEL_WIDTH/2,262,290))
                     self.display_info(current_tile)
                 pygame.display.update()
                 for event in pygame.event.get():
