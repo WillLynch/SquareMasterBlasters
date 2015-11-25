@@ -122,7 +122,7 @@ class Wilfred(Character):
     def __init__(self, x,y,owner):
         super(Wilfred, self).__init__(x,y,owner)
         # replace with image file you want for you character (put the file in the /img directory)
-        self.image = pygame.image.load(os.path.join('img', 'wilfred.jpg')).convert()
+        self.image = pygame.image.load(os.path.join('img', 'WilfredFINAL.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 4
@@ -136,7 +136,7 @@ class James(Character):
     def __init__(self, x,y,owner):
         super(James, self).__init__(x,y,owner)
         # replace with image file you want for you character (put the file in the /img directory)
-        self.image = pygame.image.load(os.path.join('img', 'james.jpg')).convert()
+        self.image = pygame.image.load(os.path.join('img', 'JamesFINAL.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 2
@@ -178,7 +178,7 @@ class Moad(Character):
     def __init__(self, x,y,owner):
         super(Moad, self).__init__(x,y,owner)
         # replace with image file you want for you character (put the file in the /img directory)
-        self.image = pygame.image.load(os.path.join('img', 'mo.jpg')).convert()
+        self.image = pygame.image.load(os.path.join('img', 'MoadFINAL.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # here you specify how far your character can move in a single action
         self.move_ability_distance = 1
@@ -208,7 +208,7 @@ class George(Character):
     def __init__(self, x,y,owner):
         super(George, self).__init__(x,y,owner)
         # George has entered the game.
-        self.image = pygame.image.load(os.path.join('img', 'george.jpeg')).convert()
+        self.image = pygame.image.load(os.path.join('img', 'GeorgeFINAL.jpeg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # Move Distance
         self.move_ability_distance = 1
