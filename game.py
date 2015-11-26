@@ -174,7 +174,8 @@ class Game:
         self.player2.add_character(Moad(5,2, PLAYER_TWO))
         self.player2.add_character(George(5,4, PLAYER_TWO))
         self.player2.add_character(Shia(5,5, PLAYER_TWO))
-
+        self.player2.add_character(James(5,3, PLAYER_TWO))
+        
     def run(self):
         self.new_game_setup()
         # game loop
