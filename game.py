@@ -167,14 +167,18 @@ class Game:
 
         # for testing our pilot project, I have placed two random characters for each player
         # I've modified these to now declare which player each belongs to.
+
+        # Player one characters initalization.
         self.player1.add_character(Wilfred(1,1, PLAYER_ONE))
         self.player1.add_character(Doge(1,2, PLAYER_ONE))
         self.player1.add_character(Barney(1,3, PLAYER_ONE))
         self.player1.add_character(Bridget(1,4, PLAYER_ONE))
-        self.player2.add_character(Moad(5,2, PLAYER_TWO))
-        self.player2.add_character(George(5,4, PLAYER_TWO))
-        self.player2.add_character(Shia(5,5, PLAYER_TWO))
-        self.player2.add_character(James(5,3, PLAYER_TWO))
+       
+        # Player two characters initalization here
+        self.player2.add_character(Moad(14,1, PLAYER_TWO))
+        self.player2.add_character(George(14,2, PLAYER_TWO))
+        self.player2.add_character(Shia(14,3, PLAYER_TWO))
+        self.player2.add_character(James(14,4, PLAYER_TWO))
         
     def run(self):
         self.new_game_setup()
