@@ -173,7 +173,7 @@ class Game:
         self.player1.add_character(Bridget(1,4, PLAYER_ONE))
         self.player2.add_character(Moad(5,2, PLAYER_TWO))
         self.player2.add_character(George(5,4, PLAYER_TWO))
-
+        self.player2.add_character(Shia(5,5, PLAYER_TWO))
 
     def run(self):
         self.new_game_setup()

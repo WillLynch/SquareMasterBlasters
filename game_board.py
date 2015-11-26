@@ -208,7 +208,7 @@ class George(Character):
     def __init__(self, x,y,owner):
         super(George, self).__init__(x,y,owner)
         # George has entered the game.
-        self.image = pygame.image.load(os.path.join('img', 'GeorgeFINAL.jpeg')).convert()
+        self.image = pygame.image.load(os.path.join('img', 'georgeFINAL.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # Move Distance
         self.move_ability_distance = 1
@@ -219,3 +219,17 @@ class George(Character):
         # Health points
         self.health_points = 10
 
+class Shia(Character):
+    def __init__(self, x,y,owner):
+        super(Shia, self).__init__(x,y,owner)
+        # These two load the image specified
+        self.image = pygame.image.load(os.path.join('img', 'shia.jpg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Move Distance
+        self.move_ability = 5 # Scales between 1-10
+        # Attack Distance
+        self.attack_ability_distance = 3 # Scales between 1-10
+        # Attack value
+        self.attack_power = 2 # Scales between 1-10
+        # Health points
+        self.health_points = 6 # Scales between 1-10
