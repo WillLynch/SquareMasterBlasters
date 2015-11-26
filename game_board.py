@@ -99,6 +99,7 @@ class Grid:
 
     def clear_grid(self):
         self.grid = {(x, y): GridTile(x,y) for x in range(HOR_SQUARES) for y in range(VERT_SQUARES)}
+        
 #-------------------------------------
 # This class is a template to create extra characters from
 # copy the class and replace/set the values accordingly
@@ -226,10 +227,41 @@ class Shia(Character):
         self.image = pygame.image.load(os.path.join('img', 'shia.jpg')).convert()
         self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
         # Move Distance
-        self.move_ability = 5 # Scales between 1-10
+        self.move_ability_distance = 5 # Scales between 1-10
         # Attack Distance
         self.attack_ability_distance = 3 # Scales between 1-10
         # Attack value
         self.attack_power = 2 # Scales between 1-10
         # Health points
         self.health_points = 6 # Scales between 1-10
+
+class Justin(Character):
+    def __init__(self, x,y,owner):
+        super(Justin, self).__init__(x,y,owner)
+        # These two load the image specified
+        self.image = pygame.image.load(os.path.join('img', 'trudeau.jpg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Move Distance
+        self.move_ability_distance = 7 # Scales between 1-10
+        # Attack Distance
+        self.attack_ability_distance = 2# Scales between 1-10
+        # Attack value
+        self.attack_power = 5 # Scales between 1-10
+        # Health points
+        self.health_points = 6 # Scales between 1-10
+
+
+class Trumph(Character):
+    def __init__(self, x,y,owner):
+        super(Trumph, self).__init__(x,y,owner)
+        # These two load the image specified
+        self.image = pygame.image.load(os.path.join('img', 'trumph.jpg')).convert()
+        self.image = pygame.transform.scale(self.image,(GRID_IMAGE_DIMENSIONS,GRID_IMAGE_DIMENSIONS))
+        # Move Distance
+        self.move_ability_distance = 2 # Scales between 1-10
+        # Attack Distance
+        self.attack_ability_distance = 2 # Scales between 1-10
+        # Attack value
+        self.attack_power = 5 # Scales between 1-10
+        # Health points
+        self.health_points = 4 # Scales between 1-10

@@ -169,16 +169,17 @@ class Game:
         # I've modified these to now declare which player each belongs to.
 
         # Player one characters initalization.
-        self.player1.add_character(Wilfred(1,1, PLAYER_ONE))
-        self.player1.add_character(Doge(1,2, PLAYER_ONE))
-        self.player1.add_character(Barney(1,3, PLAYER_ONE))
-        self.player1.add_character(Bridget(1,4, PLAYER_ONE))
-       
+        self.player1.add_character(Wilfred(4,9, PLAYER_ONE))
+        self.player1.add_character(Doge(1,3, PLAYER_ONE))
+        self.player1.add_character(Barney(2,5, PLAYER_ONE))
+        self.player1.add_character(Bridget(4,7, PLAYER_ONE))
+       	self.player1.add_character(Justin(3,11, PLAYER_ONE))
         # Player two characters initalization here
-        self.player2.add_character(Moad(14,1, PLAYER_TWO))
-        self.player2.add_character(George(14,2, PLAYER_TWO))
-        self.player2.add_character(Shia(14,3, PLAYER_TWO))
-        self.player2.add_character(James(14,4, PLAYER_TWO))
+        self.player2.add_character(Moad(12,9, PLAYER_TWO))
+        self.player2.add_character(George(7,3, PLAYER_TWO))
+        self.player2.add_character(Shia(12,5, PLAYER_TWO))
+        self.player2.add_character(James(8,7, PLAYER_TWO))
+        self.player2.add_character(Trumph(7,11, PLAYER_TWO))
         
     def run(self):
         self.new_game_setup()
@@ -195,6 +196,8 @@ class Game:
                 if current_tile in current_player.characters or current_tile in other_player.characters:
                     self.windowSurface.fill(WHITE, (WINDOW_WIDTH+10,CONTROL_PANEL_WIDTH/2,262,290))
                     self.display_info(current_tile)
+                else:
+                	self.windowSurface.fill(WHITE, (WINDOW_WIDTH+10, CONTROL_PANEL_WIDTH/2,262,290))
                 pygame.display.update()
                 for event in pygame.event.get():
                     if move is True:
