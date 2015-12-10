@@ -169,17 +169,17 @@ class Game:
         # I've modified these to now declare which player each belongs to.
 
         # Player one characters initalization.
-        self.player1.add_character(Wilfred(4,9, PLAYER_ONE))
-        self.player1.add_character(Doge(1,3, PLAYER_ONE))
-        self.player1.add_character(Barney(2,5, PLAYER_ONE))
-        self.player1.add_character(Bridget(4,7, PLAYER_ONE))
+        self.player1.add_character(Wilfred(3,9, PLAYER_ONE))
+        self.player1.add_character(Doge(3,3, PLAYER_ONE))
+        self.player1.add_character(Barney(3,5, PLAYER_ONE))
+        self.player1.add_character(Bridget(3,7, PLAYER_ONE))
        	self.player1.add_character(Justin(3,11, PLAYER_ONE))
         # Player two characters initalization here
         self.player2.add_character(Moad(12,9, PLAYER_TWO))
-        self.player2.add_character(George(7,3, PLAYER_TWO))
+        self.player2.add_character(George(12,3, PLAYER_TWO))
         self.player2.add_character(Shia(12,5, PLAYER_TWO))
-        self.player2.add_character(James(8,7, PLAYER_TWO))
-        self.player2.add_character(Trumph(7,11, PLAYER_TWO))
+        self.player2.add_character(James(12,7, PLAYER_TWO))
+        self.player2.add_character(Trumph(12,11, PLAYER_TWO))
         
     def run(self):
         self.new_game_setup()
